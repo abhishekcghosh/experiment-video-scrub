@@ -1,0 +1,27 @@
+{
+  "name": "experiment-video-scrub",
+  "version": "0.0.1",
+  "description": "Experiments with video scrubbing on the web",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhishekcghosh/experiment-video-scrub.git"
+  },
+  "keywords": [
+    "experiment",
+    "playground",
+    "video",
+    "web",
+    "html5",
+    "scrubbing"
+  ],
+  "author": "Abhishek Ghosh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/abhishekcghosh/experiment-video-scrub/issues"
+  },
+  "homepage": "https://github.com/abhishekcghosh/experiment-video-scrub#readme"
+}
