@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Video Scrubbing</title>
+        <meta charset="utf-8" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../common/main.css" />
+    </head>
+    <body>
+        <div id="content">
+            <p><a href="../">back</a></p>
+            <h1>
+                Video Scrubbing
+            </h1>
+            <h3>With frame unpacking and <code>canvas</code> element.</h3>
+            <section>
+                <pre id="comments"></pre>
+            </section>
+            <section class="canvas-container" id="canvas-container">
+                <input name="video-url" type="hidden" value="../videos/drone.mp4" data-frames="200" />
+            </section>
+        </div>
+        <script src="../common/log.js"></script>
+        <script src="../common/scroll-observable.js"></script>
+        <script src="assets/frame-unpacker.js"></script>
+        <script src="assets/scrubber.js"></script>
+        <script src="assets/main.js"></script>
+    </body>
+</html>
