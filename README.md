@@ -5,6 +5,8 @@ Experiments with video scrubbing on the web.
 We try out two basic mechanisms of downloading a video on the page on a browser and then attempting
 to scrub it with input signals such as the scrolling of the page in this example.
 
+See it in action: https://video-scrub.playground.ghosh.dev/
+
 ## Approaches
 
 #### #1: video-current-time
