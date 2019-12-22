@@ -37,7 +37,7 @@
 
     log('Setting up scrubber...');
 
-    const observer = Scrubber.create(context, frames);
+    const observer = CanvasFrameScrubber.create(context, frames);
 
     const observable = new ScrollObservable();
     observable.subscribe(observer);
