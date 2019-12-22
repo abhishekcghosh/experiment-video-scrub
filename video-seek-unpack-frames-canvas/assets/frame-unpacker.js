@@ -28,6 +28,7 @@ const FrameUnpacker = (() => {
 
         // load the video in a video element
         const videoElement = document.createElement('video');
+        videoElement.crossOrigin = 'Anonymous';
         videoElement.src = videoUrl;
         videoElement.muted = true; // important for autoplay
 
@@ -69,7 +70,7 @@ const FrameUnpacker = (() => {
             frames.push(imageBitmap);
         }
 
-        log(`Average time per frame: ${average(frameExtractTimings)}ms`);
+        log(`Average extraction time per frame: ${average(frameExtractTimings)}ms`);
 
         return frames;
     };

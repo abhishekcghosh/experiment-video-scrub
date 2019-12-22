@@ -15,6 +15,10 @@ I have been simply using [VSCode Live Server](https://github.com/ritwickdey/vsco
 
 The github repository deploys to [Netlify](https://app.netlify.com/sites/experiment-video-scrub/overview) from the `master` branch.
 
+## Video Source Attribution
+
+Sample video is picked up from [public test video sources](https://gist.github.com/jsturgis/3b19447b304616f18657). All copyrights belong to the original owners.
+
 ## Approaches
 
 #### #1: video-current-time
