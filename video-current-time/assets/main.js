@@ -1,4 +1,6 @@
 (async () => {
+    startProgress();
+
     log('Loading. Please wait...');
 
     const observer = await Scrubber.create({
@@ -9,4 +11,6 @@
     observable.subscribe(observer);
 
     log('Ready! Scroll to scrub.');
+
+    stopProgress();
 })();

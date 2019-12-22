@@ -1,4 +1,6 @@
 (async () => {
+    startProgress();
+
     const videoContainer = document.querySelector('#canvas-container');
     const videoUrlElement = document.querySelector('input[name="video-url"]');
     if (!videoContainer || !videoUrlElement) {
@@ -6,21 +8,20 @@
     }
 
     const videoUrl = videoUrlElement.value;
-    const frameCount = videoUrlElement.dataset.frames;
 
     log(`Initializing video: ${videoUrl}`);
 
-    log(`Please be patient. Unpacking ${frameCount} frames...`);
+    log(`Please be patient. Video will be played behind the scenes to extract frames...`);
 
     const startTime = Date.now();
 
     const frames = await FrameUnpacker.unpack({
-        url: videoUrl,
-        frames: frameCount
+        url: videoUrl
     });
 
     const endTime = Date.now();
 
+    log(`Extracted ${frames.length} frames.`);
     log(`Took ${(endTime - startTime) / 1000} seconds.`);
 
     log('Painting canvas on document with first frame...');
@@ -42,4 +43,6 @@
     observable.subscribe(observer);
 
     log('Ready! Scroll to scrub.');
+
+    stopProgress();
 })();

@@ -29,6 +29,7 @@ const FrameUnpacker = (() => {
         // load the video in a video element
         const videoElement = document.createElement('video');
         videoElement.src = videoUrl;
+        videoElement.muted = true; // important for autoplay
 
         // wait for it to be ready for processing
         await waitForCanPlayThrough(videoElement);
@@ -43,10 +44,8 @@ const FrameUnpacker = (() => {
         videoElement.currentTime = 0;
         await waitForSeeked(videoElement);
 
-        // create a canvas to paint and extract frames from video timestamps
-        const canvasElement = document.createElement('canvas');
-        canvasElement.width = width;
-        canvasElement.height = height;
+        // create an offscreen canvas to paint and extract frames from video timestamps
+        const canvasElement = new OffscreenCanvas(width, height);
         const context = canvasElement.getContext('2d');
 
         for (let step = 0; step <= duration; step += timeStep) {

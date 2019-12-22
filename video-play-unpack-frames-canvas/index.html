@@ -14,25 +14,19 @@
                 Video Scrubbing
             </h1>
             <h2>
-                <code>video-current-time</code>
+                <code>canvas-play-unpack-frames</code>
             </h2>
             <section>
                 <pre id="comments"></pre>
             </section>
-            <section>
-                <video preload muted playsinline class="video-container" id="video-1">
-                    <source src="../videos/drone.mp4" type="video/mp4" />
-                    <p>
-                        Your browser doesn't support HTML5 video. Here is a
-                        <a href="../videos/drone.mp4">link to the video</a>
-                        instead.
-                    </p>
-                </video>
+            <section class="canvas-container" id="canvas-container">
+                <input name="video-url" type="hidden" value="../videos/drone.mp4" />
             </section>
         </div>
         <script src="../common/utils.js"></script>
         <script src="../common/scroll-observable.js"></script>
-        <script src="assets/scrubber.js"></script>
+        <script src="../common/canvas-frame-scrubber.js"></script>
+        <script src="assets/frame-unpacker.js"></script>
         <script src="assets/main.js"></script>
     </body>
 </html>

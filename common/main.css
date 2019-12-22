@@ -13,8 +13,12 @@ a {
     color: #33a8ff;
 }
 
-ul {
+.index-list {
     line-height: 150%;
+}
+
+.index-list li {
+    margin-bottom: 10px;
 }
 
 #content {
@@ -31,4 +35,8 @@ ul {
 .canvas {
     width: 100%;
     height: auto;
+}
+
+.cursor-loading {
+    cursor: progress;
 }

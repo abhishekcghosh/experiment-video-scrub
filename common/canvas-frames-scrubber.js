@@ -1,4 +1,4 @@
-const Scrubber = (() => {
+const CanvasFrameScrubber = (() => {
     const create = (context, frames) => {
         let currentFrame = 0;
 
