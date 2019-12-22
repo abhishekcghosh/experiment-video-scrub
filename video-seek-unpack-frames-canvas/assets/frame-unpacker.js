@@ -48,6 +48,9 @@ const FrameUnpacker = (() => {
         const canvasElement = new OffscreenCanvas(width, height);
         const context = canvasElement.getContext('2d');
 
+        // metrics
+        const frameExtractTimings = [];
+
         for (let step = 0; step <= duration; step += timeStep) {
             // progress video to desired timestamp
             videoElement.currentTime = step;
@@ -56,12 +59,17 @@ const FrameUnpacker = (() => {
             await waitForSeeked(videoElement);
 
             // paint and extract out a frame for the timestamp
+            const extractTimeStart = performance.now();
             context.drawImage(videoElement, 0, 0, width, height);
             const imageData = context.getImageData(0, 0, width, height);
+            const imageBitmap = await createImageBitmap(imageData);
+            frameExtractTimings.push(performance.now() - extractTimeStart);
 
             // and collect it in the list of our frames
-            frames.push(imageData);
+            frames.push(imageBitmap);
         }
+
+        log(`Average time per frame: ${average(frameExtractTimings)}ms`);
 
         return frames;
     };

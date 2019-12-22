@@ -37,7 +37,7 @@ const FrameUnpacker = (() => {
             let lastCurrentTime = 0;
 
             videoElement.addEventListener('timeupdate', e => {
-                requestAnimationFrame(() => {
+                requestAnimationFrame(async () => {
                     // debounce a bit more... don't extract too many frames which will bloat up
                     // memory and will be useless for scrubbing due to too much work
                     if (videoElement.currentTime - lastCurrentTime <= 0.01) {
@@ -50,9 +50,10 @@ const FrameUnpacker = (() => {
                     // paint and extract out a frame for the timestamp
                     context.drawImage(videoElement, 0, 0, width, height);
                     const imageData = context.getImageData(0, 0, width, height);
+                    const imageBitmap = await createImageBitmap(imageData);
 
                     // and collect it in the list of our frames
-                    frames.push(imageData);
+                    frames.push(imageBitmap);
 
                     if (videoElement.currentTime < videoElement.duration) {
                         // go on...

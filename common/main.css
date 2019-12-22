@@ -23,6 +23,7 @@ a {
 
 #content {
     position: fixed;
+    max-width: calc(100% - 20px);
 }
 
 .video-container,

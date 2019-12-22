@@ -9,7 +9,7 @@ const CanvasFrameScrubber = (() => {
                 if (currentFrame === frameIndex) return;
 
                 window.requestAnimationFrame(() => {
-                    context.putImageData(frames[frameIndex], 0, 0);
+                    context.drawImage(frames[frameIndex], 0, 0);
                 });
             }
         };

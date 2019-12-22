@@ -11,7 +11,7 @@
 
     log(`Initializing video: ${videoUrl}`);
 
-    log(`Please be patient. Video will be played behind the scenes to extract frames...`);
+    log(`Please be patient.\nPlaying hidden video to extract frames...`);
 
     const startTime = Date.now();
 
@@ -24,14 +24,14 @@
     log(`Extracted ${frames.length} frames.`);
     log(`Took ${(endTime - startTime) / 1000} seconds.`);
 
-    log('Painting canvas on document with first frame...');
+    log('Painting canvas with first frame...');
 
     const canvas = document.createElement('canvas');
     canvas.classList.add('canvas');
     canvas.height = frames[0].height;
     canvas.width = frames[0].width;
     const context = canvas.getContext('2d');
-    context.putImageData(frames[0], 0, 0);
+    context.drawImage(frames[0], 0, 0);
 
     videoContainer.appendChild(canvas);
 

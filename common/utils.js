@@ -16,3 +16,8 @@ const startProgress = () => {
 const stopProgress = () => {
     document.documentElement.classList.remove('cursor-loading');
 };
+
+// average over an array
+const average = arr => {
+    return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2);
+};
