@@ -35,15 +35,14 @@ const FrameUnpacker = (() => {
         // wait for it to be ready for processing
         await waitForCanPlayThrough(videoElement);
 
-        // debugger;
-
-        const videoStream = videoElement.captureStream();
-        const [videoTrack] = videoStream.getVideoTracks();
-        const imageCapture = new ImageCapture(videoTrack);
-
         // obtain basic parameters
         const duration = videoElement.duration;
         const timeStep = duration / frameCount;
+
+        // get stream and setup image capture
+        const videoStream = videoElement.captureStream();
+        const [videoTrack] = videoStream.getVideoTracks();
+        const imageCapture = new ImageCapture(videoTrack);
 
         // seek to beginning and wait for it to be ready in that state
         videoElement.currentTime = 0;
