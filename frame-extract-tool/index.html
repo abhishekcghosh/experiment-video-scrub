@@ -42,7 +42,10 @@
             <p>
                 Most of this code is written for modern browsers and so far only tested on newer versions of Chrome
                 (v78+). I haven't (yet) got the time to test it across all browsers and provide the suitable polyfills
-                where required; my apologies if it breaks on an older or different browser :(
+                where required; my apologies if it breaks on an older or different browser :( Goes without saying that
+                this is also not optimised for handling extraction of a very large number of frames from a lengthy video
+                as it handles everything in memory at one go for now. A couple of thousands of frames for a HD video
+                should be fine.
             </p>
             <p>
                 Additional credits go to <a href="https://github.com/Stuk/jszip" target="_blank">JSZip</a> and
