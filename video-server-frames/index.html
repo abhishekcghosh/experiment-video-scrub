@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Video Scrubbing</title>
+        <meta charset="utf-8" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../common/main.css" />
+        <link
+            rel="preload"
+            href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+            as="video"
+        />
+    </head>
+    <body>
+        <div id="content">
+            <p><a href="../">back</a></p>
+            <h1>
+                Video Scrubbing
+            </h1>
+            <h2>
+                <code>video-server-frames</code>
+            </h2>
+            <section>
+                <pre id="comments"></pre>
+            </section>
+            <section class="canvas-container" id="canvas-container">
+                <input
+                    name="frames-url"
+                    type="hidden"
+                    value="../videos/frames/image{{id}}.jpg"
+                    data-frame-start="1"
+                    data-frame-end="152"
+                    data-frame-id-padding="3"
+                />
+            </section>
+        </div>
+        <script src="../common/utils.js"></script>
+        <script src="../common/scroll-observable.js"></script>
+        <script src="../common/canvas-frame-scrubber.js"></script>
+        <script src="assets/frame-unpacker.js"></script>
+        <script src="assets/main.js"></script>
+    </body>
+</html>
