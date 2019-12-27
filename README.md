@@ -7,6 +7,8 @@ to scrub it with input signals such as the scrolling of the page in this example
 
 See it in action: https://video-scrub.playground.ghosh.dev/
 
+Video Frame Extract Tool (experimental): https://video-scrub.playground.ghosh.dev/frame-extract-tool/
+
 ## Local Development
 
 I have been simply using [VSCode Live Server](https://github.com/ritwickdey/vscode-live-server) for local development.
@@ -85,10 +87,53 @@ Offscreen canvas' 2D context and extracting out the image bitmap from it :(
 
 #### #5: video-server-frames
 
-TBA
+Perhaps the simplest mechanism of all, which relies on the server to provide a bunch of video frames
+as images to scrub through. This works out well when you know what video would be scrubbed through
+exactly (a common use-case for such a scroll based video scrub animation) and the server can handle
+the frames extraction and serving part, freeing up the client from having to download a video and
+perform all the prep up work and computation to extract frames out of it. On a decent network
+connection, this turns out to be the fastest mechanism to bootstrap the scrubbing experience.
+
+On a production environment that fits such use-cases, this is perhaps the best way to go about it
+for now with much complexity on the client. As a bonus, this opens up pathways for things like image
+quality, how many frames would be downloaded and all that which can be more easily negotiated with
+the server based on information on client-side capabilities (device computation power, memory,
+network speed, data-saver modes and so on) as compared to having to download a video and then
+extract pieces from it.
+
+Initially, it seemed that downloading an image sprite with a bunch of frames as opposed to
+individual requests for frames maybe a good idea, but it turned out tricky. Based on the actual
+frame images and things like how many frames, sprites can actually degrade the performance (size of
+downloads). In a world with HTTP/2, distinct images seem to usually fare better. We can even
+prioritise frame download and bootstrap the scrubbing experience faster if you want.
 
 #### #6: video-wasm-ffmpeg-extract
 
 Definitely an idea to pursue, although I haven't yet been able to test this in action.
 
-TBA
+The idea is to exploit [WebAssembly](https://webassembly.github.io/) to have an in-browser ffmpeg
+module loaded which can then be invoked to extract out frames.
+
+This should be possible today in theory with [ffmpeg.js](https://github.com/Kagami/ffmpeg.js). I
+tried going through this but have so far given up having faced a number of difficulties with
+compiling low-level modules into a build of ffmpeg.js that would work for this experiment - somehow,
+the default ffpmeg.js builds are not built with the required options needed for performing frame
+extracts. I'll try again in the future.
+
+One sureshot thing to consider is though - for typical small sized videos or when the actual video
+in question is known not to change, this probably sounds like a fairly over-engineered idea. The
+WASM library build for ffmpeg.js itself is humongous in size for one (~14MB) to have it downloaded
+and instantiated before any actual work can happen, which is fairly cost prohibitive for what I had
+been trying to achieve here. This would however probably break-even for other use-cases which may
+fit the bill better - say we're dynamically changing a lot of video content, scrubbing through them,
+saving them back and so on (eg. a in-browser video frame extractor and editor).
+
+## Bonus
+
+While playing around with these experiments, I decided to quickly hack up together a **video frame
+extract tool** that can take any video that is uploaded and extract out frames from it which which
+can be conveniently downloaded as a bunch of JPEG images within a single ZIP file.
+
+It's also a bit configurable, such as how many frames to extract or at what frame rate.
+
+Check this out here: https://video-scrub.playground.ghosh.dev/frame-extract-tool/
