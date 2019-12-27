@@ -95,17 +95,17 @@ perform all the prep up work and computation to extract frames out of it. On a d
 connection, this turns out to be the fastest mechanism to bootstrap the scrubbing experience.
 
 On a production environment that fits such use-cases, this is perhaps the best way to go about it
-for now with much complexity on the client. As a bonus, this opens up pathways for things like image
-quality, how many frames would be downloaded and all that which can be more easily negotiated with
-the server based on information on client-side capabilities (device computation power, memory,
-network speed, data-saver modes and so on) as compared to having to download a video and then
-extract pieces from it.
+for now with much complexity removed from the client. As a bonus, this opens up pathways for things
+like image quality, how many frames would be downloaded and all that which can be more easily
+negotiated with the server based on information on client-side capabilities (device computation
+power, memory, network speed, data-saver modes and so on) as compared to having to download a video
+and then extract pieces from it.
 
 Initially, it seemed that downloading an image sprite with a bunch of frames as opposed to
 individual requests for frames maybe a good idea, but it turned out tricky. Based on the actual
 frame images and things like how many frames, sprites can actually degrade the performance (size of
 downloads). In a world with HTTP/2, distinct images seem to usually fare better. We can even
-prioritise frame download and bootstrap the scrubbing experience faster if you want.
+prioritise frame download and bootstrap the scrubbing experience faster if we want.
 
 #### #6: video-wasm-ffmpeg-extract
 
@@ -120,13 +120,13 @@ compiling low-level modules into a build of ffmpeg.js that would work for this e
 the default ffpmeg.js builds are not built with the required options needed for performing frame
 extracts. I'll try again in the future.
 
-One sureshot thing to consider is though - for typical small sized videos or when the actual video
-in question is known not to change, this probably sounds like a fairly over-engineered idea. The
-WASM library build for ffmpeg.js itself is humongous in size for one (~14MB) to have it downloaded
-and instantiated before any actual work can happen, which is fairly cost prohibitive for what I had
-been trying to achieve here. This would however probably break-even for other use-cases which may
-fit the bill better - say we're dynamically changing a lot of video content, scrubbing through them,
-saving them back and so on (eg. a in-browser video frame extractor and editor).
+One sureshot thing to consider though - for typical small sized videos or when the actual video in
+question is known not to change, this sounds like a fairly over-engineered idea. The WASM library
+build for ffmpeg.js itself is humongous in size for one (~14MB) to have it downloaded and
+instantiated before any actual work can happen, which is fairly cost prohibitive for what I had been
+trying to achieve here. This would however probably break-even for other use-cases which may fit the
+bill better - say we're dynamically changing a lot of video content, scrubbing through them, saving
+them back and so on (eg. a in-browser video frame extractor and editor).
 
 ## Bonus
 
