@@ -21,3 +21,15 @@ const stopProgress = () => {
 const average = arr => {
     return (arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(2);
 };
+
+// promise with timeout
+const withTimeout = async (promise, timeout) => {
+    return new Promise(async (resolve, reject) => {
+        setTimeout(() => {
+            reject(`Promise ${promise} timed out at ${timeout}ms`);
+        }, timeout);
+
+        await promise;
+        resolve(promise);
+    });
+};
