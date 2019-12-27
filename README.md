@@ -82,3 +82,13 @@ While this approach originally seemed relatively a bit elegant conceptually, to 
 APIs, in reality this turned out to be way slower performance wise, often taking as much as more
 than double the time in extracting a frame compared to directly drawing the video element in a
 Offscreen canvas' 2D context and extracting out the image bitmap from it :(
+
+#### #5: video-server-frames
+
+TBA
+
+#### #6: video-wasm-ffmpeg-extract
+
+Definitely an idea to pursue, although I haven't yet been able to test this in action.
+
+TBA
