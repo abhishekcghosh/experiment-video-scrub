@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Video Frame Extract Tool (experimental)</title>
+        <meta charset="utf-8" />
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="assets/main.css" />
+    </head>
+    <body>
+        <div id="content">
+            <p>
+                <a href="../" class="text-small">&lt; see other video frame extraction and scrubbing experiments</a>
+            </p>
+            <h1>Video Frame Extract Tool <sup>(experimental)</sup></h1>
+            <h6>from <a href="https://ghosh.dev">ghosh.dev</a></h6>
+            <p>
+                Upload a video to extract frames from it. Extracted frames are downloaded automatically as a ZIP file
+                with each frame stored as a JPEG image (85% quality).
+            </p>
+            <p>
+                This does not upload the video to any server. All processing is done locally on your browser.
+            </p>
+            <p>
+                The process is simple: an uploaded video is taken and passed on to a hidden HTML
+                <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video" target="_blank">video</a>
+                element that can play it. Based on number of frames to be extracted, the video is paused at each
+                suitable interval and then its pixels are rendered on a hidden HTML
+                <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas" target="_blank">canvas</a>
+                element to extract out the image bitmap data for the paused frame. This means the so called frames are
+                an outcome of interpolation and video playback and not truly "frame accurate" from a purist's
+                perspective. However, this still works out fairly well for the human eye. Each such extracted frame is
+                then converted into a
+                <a href="https://developer.mozilla.org/en-US/docs/Web/API/Blob" target="_blank">blob</a> and all of that
+                is eventually zipped together and downloaded for you.
+            </p>
+            <p>
+                For seeing a similar mechanism in action which first extracts out some frames from a video using the
+                same mechanism and then uses scroll input to scrub and animate through them, check out the
+                <a href="../video-seek-unpack-frames-canvas">video-seek-unpack-frames-canvas</a> demo.
+            </p>
+            <p>
+                Most of this code is written for modern browsers and so far only tested on newer versions of Chrome
+                (v78+). I haven't (yet) got the time to test it across all browsers and provide the suitable polyfills
+                where required; my apologies if it breaks on an older or different browser :(
+            </p>
+            <p>
+                Additional credits go to <a href="https://github.com/Stuk/jszip" target="_blank">JSZip</a> and
+                <a href="https://github.com/eligrey/FileSaver.js" target="_blank">FileSaver.js</a> for helping enable
+                in-browser zip file generation and downloads so easily.
+            </p>
+            <h4>
+                Follow these steps:
+            </h4>
+            <section>
+                <form name="video-form" id="video-form" method="#" action="#">
+                    <div class="form-row">
+                        <label for="video-file"
+                            >1. Choose a video file that your browser can play (eg. .mp4, .webm, .ogg, .ogm,
+                            .ogv):</label
+                        >
+                        <input type="file" id="video-file" accept=".mp4,.webm,.ogg,.ogm,.ogv,.mkv" required />
+                    </div>
+                    <div class="form-row">
+                        <label for="extract-by">2. Choose how to extract frames: by</label>
+                        <select id="extract-by" required>
+                            <option value="rate">frame rate</option>
+                            <option value="count">frame count</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label for="extract-count"
+                            >3. Enter the numerical value for your choice in step #2 (between 1-60 if "frame rate" is
+                            chosen, or 1-3600 if "frame count" is chosen) :</label
+                        >
+                        <input id="extract-count" type="number" min="1" max="3600" value="10" step="1" required />
+                    </div>
+                    <div class="form-row">
+                        <input id="extract-submit" type="submit" value="Extract Frames and Download!" />
+                    </div>
+                </form>
+            </section>
+            <section>
+                <progress id="frames-progress" value="0" max="100"></progress>
+            </section>
+            <section>
+                <pre id="comments"></pre>
+            </section>
+            <section class="canvas-container" id="canvas-container"></section>
+        </div>
+        <script src="../vendor/jszip.min.js"></script>
+        <script src="../vendor/FileSaver.min.js"></script>
+        <script src="../common/utils.js"></script>
+        <script src="assets/frame-unpacker.js"></script>
+        <script src="assets/main.js"></script>
+    </body>
+</html>
