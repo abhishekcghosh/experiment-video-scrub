@@ -1,141 +1,37 @@
 # experiment-video-scrub
 
-Experiments with video scrubbing on the web.
+A collection of proof-of-concepts and prototypes of various mechanisms to enable video scrubbing based experiences on the web with input signals such as the scrolling of the page.
 
-We try out two basic mechanisms of downloading a video on the page on a browser and then attempting
-to scrub it with input signals such as the scrolling of the page in this example.
+## Approaches & Demos
 
-See it in action: https://video-scrub.playground.ghosh.dev/
+Read about approaches, observations and learnings in detail on my [blog post](https://ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/).
 
-Video Frame Extract Tool (experimental): https://video-scrub.playground.ghosh.dev/frame-extract-tool/
+#### #1: video-current-time: ([blog](https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#1-video-current-time-demo)) ([demo](https://video-scrub.playground.ghosh.dev/video-current-time/))
 
-Read about this in detail on my blog: https://ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/
+#### #2: video-play-unpack-frames-canvas ([blog](https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#2-video-play-unpack-frames-canvas-demo)) ([demo](https://video-scrub.playground.ghosh.dev/video-play-unpack-frames-canvas/))
 
-## Local Development
+#### #3: video-seek-unpack-frames-canvas ([blog](https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#3-video-seek-unpack-frames-canvas-demo)) ([demo](https://video-scrub.playground.ghosh.dev/video-seek-unpack-frames-canvas/))
 
-I have been simply using [VSCode Live Server](https://github.com/ritwickdey/vscode-live-server) for local development.
+#### #4: video-seek-media-stream-image-capture ([blog](https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#4-video-seek-media-stream-image-capture-demo)) ([demo](https://video-scrub.playground.ghosh.dev/video-seek-media-stream-image-capture/))
 
-## Deploy
+#### #5: video-server-frames ([blog](https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#5-video-server-frames-demo)) ([demo](https://video-scrub.playground.ghosh.dev/video-server-frames/))
+
+#### #6: video-wasm-ffmpeg-extract ([blog](https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#6-video-wasm-ffmpeg-extract))
+
+## Bonus
+
+Try out the bonus [Video Frame Extract Tool (experimental)](https://video-scrub.playground.ghosh.dev/frame-extract-tool/).
+
+## Dev Setup
+
+#### Local
+
+This is purely a static website, so it doesn't need a server. For ease of development though, I have been simply using [VSCode Live Server](https://github.com/ritwickdey/vscode-live-server) for local development.
+
+#### Deploy
 
 The github repository deploys to [Netlify](https://app.netlify.com/sites/experiment-video-scrub/overview) from the `master` branch.
 
 ## Video Source Attribution
 
 Sample video is picked up from [public test video sources](https://gist.github.com/jsturgis/3b19447b304616f18657). All copyrights belong to the original owners.
-
-## Approaches
-
-#### #1: video-current-time
-
-This mechanism simply loads the video in a HTML5 `video` tag and attempts to set the `currentTime`
-property of the loaded video in an attempt to scrub it when scrolling.
-
-This somewhat works out on high end devices especially with low quality videos. But can't be
-trusted, atleast definitely not on mobile browsers. Rule of thumb, the browser does a lot of
-intelligent things to adjust the how and when of video seeking and painting the corresponding frame.
-This is probably the most naive (and stupidest) way.
-
-#### #2: video-play-unpack-frames-canvas
-
-This mechanism simply downloads the video in an HTML5 `video` tag, and unpacks video frames from it
-by starting to `play` the video and then listening to regular `timeupdate` event on the video
-element to be fired, at which point it `pauses` the video to grab a frame by painting the outcome on
-an `OffscreenCanvas` element and collecting the frame's image bitmap from canvas' 2D context. When
-done, it `plays` the video again, and the loop continues till the video has been played to the end.
-
-Imagine this to be generating a set of image files from the original source video we we do this
-generation in the browser directly using an `OffscreenCanvas`. We could do this with a normal `canvas`
-element as well, but not a great reason to do that.
-
-Once that is done, for scrubbing, we figure out the correct frame to paint based on the input signal
-(scroll position in this example) and then draw the correct frame on a _visible_ `canvas` element's
-2D context on the page.
-
-This is not as elegant as we may initially think. Of course, the time to extract out the frames is
-lower-bound by the duration of the video but overall it takes much more time due to so much amount
-of javascript work happening.
-
-#### #3: video-seek-unpack-frames-canvas
-
-Very similar to `video-play-unpack-frames-canvas`, this also downloads the video in an HTML5 `video`
-tag, but unpacks video frames from it by _seeking_ through the video at regular intervals and
-painting the outcome on a `OffscreenCanvas` element and collecting the frame's image bitmap from
-canvas' 2D context. A predefined number of frames are unpacked.
-
-Once that is done, for scrubbing, we figure out the correct frame to paint based on the input signal
-(scroll position in this example) and then draw the correct frame on a _visible_ `canvas` element's
-2D context on the page.
-
-Thus, it brings some improvements over `video-play-unpack-frames-canvas` - much faster due to seek rather
-than play (not being bound to video `duration`), and with a bit more control on the number of frames
-and perhaps hopefully cheaper in comparison.
-
-#### #4: video-seek-media-stream-image-capture
-
-Largely similar to above approach of `video-seek-unpack-frames-canvas` in terms of seeking through
-the video using a HTML5 `video` tag, but instead of pausing and drawing it on a canvas context to
-extract out the frame's image bitmap data, we use
-[`captureStream()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/captureStream)
-on the `video` element to capture the video stream and then we use the captured stream's
-[`ImageCapture`](https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture) interface to grab
-the image bitmap data of a frame at a desired point in time.
-
-Once that is done, for scrubbing, we follow the exact same approach as above.
-
-While this approach originally seemed relatively a bit elegant conceptually, to use the MediaStream
-APIs, in reality this turned out to be way slower performance wise, often taking as much as more
-than double the time in extracting a frame compared to directly drawing the video element in a
-Offscreen canvas' 2D context and extracting out the image bitmap from it :(
-
-#### #5: video-server-frames
-
-Perhaps the simplest mechanism of all, which relies on the server to provide a bunch of video frames
-as images to scrub through. This works out well when you know what video would be scrubbed through
-exactly (a common use-case for such a scroll based video scrub animation) and the server can handle
-the frames extraction and serving part, freeing up the client from having to download a video and
-perform all the prep up work and computation to extract frames out of it. On a decent network
-connection, this turns out to be the fastest mechanism to bootstrap the scrubbing experience.
-
-On a production environment that fits such use-cases, this is perhaps the best way to go about it
-for now with much complexity removed from the client. As a bonus, this opens up pathways for things
-like image quality, how many frames would be downloaded and all that which can be more easily
-negotiated with the server based on information on client-side capabilities (device computation
-power, memory, network speed, data-saver modes and so on) as compared to having to download a video
-and then extract pieces from it.
-
-Initially, it seemed that downloading an image sprite with a bunch of frames as opposed to
-individual requests for frames maybe a good idea, but it turned out tricky. Based on the actual
-frame images and things like how many frames, sprites can actually degrade the performance (size of
-downloads). In a world with HTTP/2, distinct images seem to usually fare better. We can even
-prioritise frame download and bootstrap the scrubbing experience faster if we want.
-
-#### #6: video-wasm-ffmpeg-extract
-
-Definitely an idea to pursue, although I haven't yet been able to test this in action.
-
-The idea is to exploit [WebAssembly](https://webassembly.github.io/) to have an in-browser ffmpeg
-module loaded which can then be invoked to extract out frames.
-
-This should be possible today in theory with [ffmpeg.js](https://github.com/Kagami/ffmpeg.js). I
-tried going through this but have so far given up having faced a number of difficulties with
-compiling low-level modules into a build of ffmpeg.js that would work for this experiment - somehow,
-the default ffpmeg.js builds are not built with the required options needed for performing frame
-extracts. I'll try again in the future.
-
-One sureshot thing to consider though - for typical small sized videos or when the actual video in
-question is known not to change, this sounds like a fairly over-engineered idea. The WASM library
-build for ffmpeg.js itself is humongous in size for one (~14MB) to have it downloaded and
-instantiated before any actual work can happen, which is fairly cost prohibitive for what I had been
-trying to achieve here. This would however probably break-even for other use-cases which may fit the
-bill better - say we're dynamically changing a lot of video content, scrubbing through them, saving
-them back and so on (eg. a in-browser video frame extractor and editor).
-
-## Bonus
-
-While playing around with these experiments, I decided to quickly hack up together a **video frame
-extract tool** that can take any video that is uploaded and extract out frames from it which which
-can be conveniently downloaded as a bunch of JPEG images within a single ZIP file.
-
-It's also a bit configurable, such as how many frames to extract or at what frame rate.
-
-Check this out here: https://video-scrub.playground.ghosh.dev/frame-extract-tool/
