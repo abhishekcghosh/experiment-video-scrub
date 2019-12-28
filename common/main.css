@@ -9,16 +9,13 @@ body {
     color: #eee;
 }
 
+html.home,
+body.home {
+    height: 100%;
+}
+
 a {
     color: #33a8ff;
-}
-
-.index-list {
-    line-height: 150%;
-}
-
-.index-list li {
-    margin-bottom: 10px;
 }
 
 #content {

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="home">
     <head>
         <title>Video Scrubbing Trials</title>
         <meta charset="utf-8" />
@@ -8,177 +8,92 @@
         <link rel="stylesheet" href="common/main.css" />
         <link rel="preload" href="../videos/ForBiggerBlazes.mp4" as="video" />
     </head>
-    <body>
+    <body class="home">
         <div>
             <h1>
                 Video Scrubbing Trials
             </h1>
 
-            <p>
-                Check out the
-                <a href="https://github.com/abhishekcghosh/experiment-video-scrub" target="_blank">source</a>
-                for more details. Or try out the
-                <a href="/frame-extract-tool">video frame extract tool</a>.
+            <p class="has-line-data" data-line-start="0" data-line-end="1">
+                A collection of proof-of-concepts and prototypes of various mechanisms to enable video scrubbing based
+                experiences on the web with input signals such as the scrolling of the page.
             </p>
-
-            <p></p>
-
-            <h3>
-                Attempts &amp; Demos
-            </h3>
-
-            <h4>
-                <a href="/video-current-time">#1: video-current-time</a>
-            </h4>
-            <p>
-                This mechanism simply loads the video in a HTML5 <code>video</code> tag and attempts to set the
-                <code>currentTime</code>
-                property of the loaded video in an attempt to scrub it when scrolling.
+            <p class="has-line-data" data-line-start="2" data-line-end="3">
+                See <a href="https://github.com/abhishekcghosh/experiment-video-scrub">source code</a> on github.
             </p>
-            <p>
-                This somewhat works out on high end devices especially with low quality videos. But can’t be trusted,
-                atleast definitely not on mobile browsers. Rule of thumb, the browser does a lot of intelligent things
-                to adjust the how and when of video seeking and painting the corresponding frame. This is probably the
-                most naive (and stupidest) way.
-            </p>
-
-            <h4>
-                <a href="/video-play-unpack-frames-canvas">#2: video-play-unpack-frames-canvas</a>
-            </h4>
-            <p>
-                This mechanism simply downloads the video in an HTML5 <code>video</code> tag, and unpacks video frames
-                from it by starting to <code>play</code> the video and then listening to regular
-                <code>timeupdate</code> event on the video element to be fired, at which point it
-                <code>pauses</code> the video to grab a frame by painting the outcome on an
-                <code>OffscreenCanvas</code> element and collecting the frame’s image bitmap from canvas’ 2D context.
-                When done, it <code>plays</code> the video again, and the loop continues till the video has been played
-                to the end.
-            </p>
-            <p>
-                Imagine this to be generating a set of image files from the original source video we we do this
-                generation in the browser directly using an <code>OffscreenCanvas</code>. We could do this with a normal
-                <code>canvas</code>
-                element as well, but not a great reason to do that.
-            </p>
-            <p>
-                Once that is done, for scrubbing, we figure out the correct frame to paint based on the input signal
-                (scroll position in this example) and then draw the correct frame on a <em>visible</em>
-                <code>canvas</code> element’s 2D context on the page.
-            </p>
-            <p>
-                This is not as elegant as we may initially think. Of course, the time to extract out the frames is
-                lower-bound by the duration of the video but overall it takes much more time due to so much amount of
-                javascript work happening.
-            </p>
-
-            <h4>
-                <a href="/video-seek-unpack-frames-canvas">#3: video-seek-unpack-frames-canvas</a>
-            </h4>
-            <p>
-                Very similar to <code>video-play-unpack-frames-canvas</code>, this also downloads the video in an HTML5
-                <code>video</code>
-                tag, but unpacks video frames from it by <em>seeking</em> through the video at regular intervals and
-                painting the outcome on a <code>OffscreenCanvas</code> element and collecting the frame’s image bitmap
-                from canvas’ 2D context. A predefined number of frames are unpacked.
-            </p>
-            <p>
-                Once that is done, for scrubbing, we figure out the correct frame to paint based on the input signal
-                (scroll position in this example) and then draw the correct frame on a <em>visible</em>
-                <code>canvas</code> element’s 2D context on the page.
-            </p>
-            <p>
-                Thus, it brings some improvements over <code>video-play-unpack-frames-canvas</code> - much faster due to
-                seek rather than play (not being bound to video <code>duration</code>), and with a bit more control on
-                the number of frames and perhaps hopefully cheaper in comparison.
-            </p>
-
-            <h4>
-                <a href="/video-seek-media-stream-image-capture">#4: video-seek-media-stream-image-capture</a>
-            </h4>
-            <p>
-                Largely similar to above approach of <code>video-seek-unpack-frames-canvas</code> in terms of seeking
-                through the video using a HTML5 <code>video</code> tag, but instead of pausing and drawing it on a
-                canvas context to extract out the frame’s image bitmap data, we use
-                <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/captureStream"
-                    ><code>captureStream()</code></a
-                >
-                on the <code>video</code> element to capture the video stream and then we use the captured stream’s
-                <a href="https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture"><code>ImageCapture</code></a>
-                interface to grab the image bitmap data of a frame at a desired point in time.
-            </p>
-            <p>
-                Once that is done, for scrubbing, we follow the exact same approach as above.
-            </p>
-            <p>
-                While this approach originally seemed relatively a bit elegant conceptually, to use the MediaStream
-                APIs, in reality this turned out to be way slower performance wise, often taking as much as more than
-                double the time in extracting a frame compared to directly drawing the video element in a Offscreen
-                canvas’ 2D context and extracting out the image bitmap from it :(
-            </p>
-
-            <h4>
-                <a href="/video-server-frames">#5: video-server-frames</a>
-            </h4>
-            <p>
-                Perhaps the simplest mechanism of all, which relies on the server to provide a bunch of video frames as
-                images to scrub through. This works out well when you know what video would be scrubbed through exactly
-                (a common use-case for such a scroll based video scrub animation) and the server can handle the frames
-                extraction and serving part, freeing up the client from having to download a video and perform all the
-                prep up work and computation to extract frames out of it. On a decent network connection, this turns out
-                to be the fastest mechanism to bootstrap the scrubbing experience.
-            </p>
-            <p>
-                On a production environment that fits such use-cases, this is perhaps the best way to go about it for
-                now with much complexity removed from the client. As a bonus, this opens up pathways for things like
-                image quality, how many frames would be downloaded and all that which can be more easily negotiated with
-                the server based on information on client-side capabilities (device computation power, memory, network
-                speed, data-saver modes and so on) as compared to having to download a video and then extract pieces
-                from it.
-            </p>
-            <p>
-                Initially, it seemed that downloading an image sprite with a bunch of frames as opposed to individual
-                requests for frames maybe a good idea, but it turned out tricky. Based on the actual frame images and
-                things like how many frames, sprites can actually degrade the performance (size of downloads). In a
-                world with HTTP/2, distinct images seem to usually fare better. We can even prioritise frame download
-                and bootstrap the scrubbing experience faster if we want.
-            </p>
-
-            <h4><a href="#">#6: video-wasm-ffmpeg-extract</a> (no demo yet)</h4>
-            <p>
-                Definitely an idea to pursue, although I haven’t yet been able to test this in action.
-            </p>
-            <p>
-                The idea is to exploit <a href="https://webassembly.github.io/" target="_blank">WebAssembly</a> to have
-                an in-browser ffmpeg module loaded which can then be invoked to extract out frames.
-            </p>
-            <p>
-                This should be possible today in theory with
-                <a href="https://github.com/Kagami/ffmpeg.js">ffmpeg.js</a>. I tried going through this but have so far
-                given up having faced a number of difficulties with compiling low-level modules into a build of
-                ffmpeg.js that would work for this experiment - somehow, the default ffpmeg.js builds are not built with
-                the required options needed for performing frame extracts. I’ll try again in the future.
-            </p>
-            <p>
-                One sureshot thing to consider though - for typical small sized videos or when the actual video in
-                question is known not to change, this sounds like a fairly over-engineered idea. The WASM library build
-                for ffmpeg.js itself is humongous in size for one (~14MB) to have it downloaded and instantiated before
-                any actual work can happen, which is fairly cost prohibitive for what I had been trying to achieve here.
-                This would however probably break-even for other use-cases which may fit the bill better - say we’re
-                dynamically changing a lot of video content, scrubbing through them, saving them back and so on (eg. a
-                in-browser video frame extractor and editor).
-            </p>
-            <h2>
-                <a href="/frame-extract-tool">Bonus: Video Frame Extract Tool</a>
+            <h2 class="code-line" data-line-start="4" data-line-end="5">
+                <a id="Approaches__Demos_4"></a>Approaches &amp; Demos
             </h2>
-            <p>
-                While playing around with these experiments, I decided to quickly hack up together a
-                <strong>video frame extract tool</strong> that can take any video that is uploaded and extract out
-                frames from it which which can be conveniently downloaded as a bunch of JPEG images within a single ZIP
-                file.
+            <p class="has-line-data" data-line-start="6" data-line-end="7">
+                Read about approaches, observations and learnings in detail on my
+                <a href="https://ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/">blog post</a>.
             </p>
-            <p>
-                It’s also a bit configurable, such as how many frames to extract or at what frame rate.
-                <a href="/frame-extract-tool">Try it out!</a>.
+            <h4 class="code-line" data-line-start="8" data-line-end="9">
+                <a
+                    id="1_videocurrenttime_bloghttpswwwghoshdevpostsplayingwithvideoscrubbinganimationsontheweb1videocurrenttimedemo_demohttpsvideoscrubplaygroundghoshdevvideocurrenttime_8"
+                ></a
+                >#1: video-current-time: (<a
+                    href="https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#1-video-current-time-demo"
+                    >blog</a
+                >) (<a href="/video-current-time/">demo</a>)
+            </h4>
+            <h4 class="code-line" data-line-start="10" data-line-end="11">
+                <a
+                    id="2_videoplayunpackframescanvas_bloghttpswwwghoshdevpostsplayingwithvideoscrubbinganimationsontheweb2videoplayunpackframescanvasdemo_demohttpsvideoscrubplaygroundghoshdevvideoplayunpackframescanvas_10"
+                ></a
+                >#2: video-play-unpack-frames-canvas (<a
+                    href="https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#2-video-play-unpack-frames-canvas-demo"
+                    >blog</a
+                >) (<a href="/video-play-unpack-frames-canvas/">demo</a>)
+            </h4>
+            <h4 class="code-line" data-line-start="12" data-line-end="13">
+                <a
+                    id="3_videoseekunpackframescanvas_bloghttpswwwghoshdevpostsplayingwithvideoscrubbinganimationsontheweb3videoseekunpackframescanvasdemo_demohttpsvideoscrubplaygroundghoshdevvideoseekunpackframescanvas_12"
+                ></a
+                >#3: video-seek-unpack-frames-canvas (<a
+                    href="https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#3-video-seek-unpack-frames-canvas-demo"
+                    >blog</a
+                >) (<a href="/video-seek-unpack-frames-canvas/">demo</a>)
+            </h4>
+            <h4 class="code-line" data-line-start="14" data-line-end="15">
+                <a
+                    id="4_videoseekmediastreamimagecapture_bloghttpswwwghoshdevpostsplayingwithvideoscrubbinganimationsontheweb4videoseekmediastreamimagecapturedemo_demohttpsvideoscrubplaygroundghoshdevvideoseekmediastreamimagecapture_14"
+                ></a
+                >#4: video-seek-media-stream-image-capture (<a
+                    href="https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#4-video-seek-media-stream-image-capture-demo"
+                    >blog</a
+                >) (<a href="/video-seek-media-stream-image-capture/">demo</a>)
+            </h4>
+            <h4 class="code-line" data-line-start="16" data-line-end="17">
+                <a
+                    id="5_videoserverframes_bloghttpswwwghoshdevpostsplayingwithvideoscrubbinganimationsontheweb5videoserverframesdemo_demohttpsvideoscrubplaygroundghoshdevvideoserverframes_16"
+                ></a
+                >#5: video-server-frames (<a
+                    href="https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#5-video-server-frames-demo"
+                    >blog</a
+                >) (<a href="/video-server-frames/">demo</a>)
+            </h4>
+            <h4 class="code-line" data-line-start="18" data-line-end="19">
+                <a
+                    id="6_videowasmffmpegextract_bloghttpswwwghoshdevpostsplayingwithvideoscrubbinganimationsontheweb6videowasmffmpegextract_18"
+                ></a
+                >#6: video-wasm-ffmpeg-extract (<a
+                    href="https://www.ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/#6-video-wasm-ffmpeg-extract"
+                    >blog</a
+                >)
+            </h4>
+            <h2 class="code-line" data-line-start="20" data-line-end="21"><a id="Bonus_20"></a>Bonus</h2>
+            <p class="has-line-data" data-line-start="22" data-line-end="23">
+                Try out the bonus
+                <a href="/frame-extract-tool/">Video Frame Extract Tool (experimental)</a>.
+            </p>
+            <h2 class="code-line" data-line-start="24" data-line-end="25">
+                <a id="Video_Source_Attribution_24"></a>Video Source Attribution
+            </h2>
+            <p class="has-line-data" data-line-start="26" data-line-end="27">
+                Sample video is picked up from
+                <a href="https://gist.github.com/jsturgis/3b19447b304616f18657">public test video sources</a>. All
+                copyrights belong to the original owners.
             </p>
         </div>
     </body>
