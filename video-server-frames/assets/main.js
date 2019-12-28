@@ -14,7 +14,7 @@
 
     log(`Initializing frames download...`);
 
-    log(`Please be patient. Downloaing ${framesUrlEnd - framesUrlStart} frames...`);
+    log(`Please be patient. Downloaing ${framesUrlEnd} frames...`);
 
     const startTime = Date.now();
 

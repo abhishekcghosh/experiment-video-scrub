@@ -9,6 +9,8 @@ See it in action: https://video-scrub.playground.ghosh.dev/
 
 Video Frame Extract Tool (experimental): https://video-scrub.playground.ghosh.dev/frame-extract-tool/
 
+Read about this in detail on my blog: https://ghosh.dev/posts/playing-with-video-scrubbing-animations-on-the-web/
+
 ## Local Development
 
 I have been simply using [VSCode Live Server](https://github.com/ritwickdey/vscode-live-server) for local development.
